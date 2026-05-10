@@ -1,6 +1,7 @@
 from operator import add, mul
 from functools import reduce, partial, lru_cache, singledispatch
-from typing import Callable, Any
+from typing import Any
+from collections.abc import Callable
 
 
 def spell_reducer(spells: list[int], operation: str) -> int:
