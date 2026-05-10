@@ -1,14 +1,14 @@
 def validate_dicts(data: list[dict], required_keys: set) -> None:
     if not isinstance(data, list) or not data:
-        raise ValueError("Must be a non-empty list")
+        raise ValueError("Error: data must be a list and len(>=1)")
     for item in data:
         if (not isinstance(item, dict) or
                 not required_keys.issubset(item.keys())):
-            raise ValueError("Invalid structure. Missing: "
+            raise ValueError("Error: Invalid structure. Missing: "
                              f"{required_keys - item.keys()}")
         if ('power' in required_keys and
                 not isinstance(item.get('power'), (int, float))):
-            raise ValueError("Power must be a number")
+            raise ValueError("Error: Power must be a number")
 
 
 def artifact_sorter(artifacts: list[dict]) -> list[dict]:
@@ -25,7 +25,7 @@ def power_filter(mages: list[dict], min_power: int) -> list[dict]:
 def spell_transformer(spells: list[str]) -> list[str]:
     if (not isinstance(spells, list) or
             not all(isinstance(x, str) for x in spells) or not spells):
-        raise ValueError("spells must be a list of strings")
+        raise ValueError("Error: spells must be a list of strings")
     return list(map(lambda s: f"* {s} *", spells))
 
 
@@ -56,7 +56,7 @@ if __name__ == '__main__':
         func_artifact_sorter = artifact_sorter(artifacts)
         i = 1
         for artifact in func_artifact_sorter:
-            print(f" {i}: {artifact['name']} "
+            print(f"{i}: {artifact['name']} "
                   f"({artifact['power']} power) type {artifact['type']}")
             i += 1
     except Exception as e:
@@ -71,10 +71,10 @@ if __name__ == '__main__':
                  {'name': 'Alex', 'power': 57, 'element': 'wind'}]
         min_power = 60
         func_power_filter = power_filter(mages, min_power)
-        print(f' Mages who have a power of more than {min_power}:')
+        print(f"Mages who have a power of more than {min_power}:")
         i = 1
         for power_filt in func_power_filter:
-            print(f"  {i}: {power_filt['name']} ({power_filt['power']} power) "
+            print(f"{i}: {power_filt['name']} ({power_filt['power']} power) "
                   f"element {power_filt['element']}")
             i += 1
     except Exception as e:
@@ -84,7 +84,7 @@ if __name__ == '__main__':
         print('\nTesting spell transformer...')
         spells = ['darkness', 'fireball', 'tornado', 'tsunami']
         func_spell_transformer = spell_transformer(spells)
-        print(f" {' '.join(func_spell_transformer)}")
+        print(f"{' '.join(func_spell_transformer)}")
     except Exception as e:
         print(e)
 
@@ -97,6 +97,6 @@ if __name__ == '__main__':
                  {'name': 'Alex', 'power': 57, 'element': 'wind'}]
         func_mage_stats = mage_stats(mages)
         for k, v in func_mage_stats.items():
-            print(f" {k}={v}")
+            print(f"{k}={v}")
     except Exception as e:
         print(e)
