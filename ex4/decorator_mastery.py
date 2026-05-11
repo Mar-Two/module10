@@ -2,6 +2,7 @@ from collections.abc import Callable
 from typing import Any
 from functools import wraps
 import time
+import inspect
 
 
 def spell_timer(func: Callable) -> Callable:
@@ -29,9 +30,11 @@ def power_validator(min_power: int):
 
         @wraps(func)
         def wrapper(*args, **kwargs) -> Any:
-            power = kwargs.get('power') or args[-1]
-            if not isinstance(power, int):
-                raise ValueError("Error: power must be an int")
+            inspect_func = inspect.signature(func)
+            dict_args = inspect_func.bind(*args, **kwargs)
+            power = dict_args.arguments.get("power")
+            if not isinstance(power, int) or power is None:
+                raise ValueError("Error: power must be an args of int")
             if power >= min_power:
                 return func(*args, **kwargs)
             return "Insufficient power for this spell"
@@ -91,10 +94,12 @@ def spell() -> None:
 
 
 @power_validator(min_power=10)
-def is_valid_power(power: int) -> str:
+def is_valid_power(power: int, spell_name: str) -> str:
     if not isinstance(power, int):
         raise ValueError("Error: power must be an int")
-    return f"{power} power."
+    if not isinstance(spell_name, str):
+        raise ValueError("Error: spell_name must be a str")
+    return f"Successfully cast {spell_name} with {power} power"
 
 
 if __name__ == '__main__':
@@ -106,8 +111,8 @@ if __name__ == '__main__':
 
     try:
         print("\nTesting power validator...")
-        print(is_valid_power(1))
-        print(is_valid_power(11))
+        print(is_valid_power(1, 'freeze'))
+        print(is_valid_power(61, 'earthquake'))
     except Exception as e:
         print(e)
 
